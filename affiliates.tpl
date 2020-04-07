@@ -123,9 +123,22 @@
 
     {if $affiliatelinkscode}
         {include file="$template/includes/subheader.tpl" title=$LANG.affiliateslinktous}
-        <div class="margin-bottom text-center">
-            {$affiliatelinkscode}
+        
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <table class="table table-striped table-rounded">
+                <tr>
+                    <td class="text-right">Starter:</td>
+                    <td><strong>{$affiliatelinkscode}&pid=1</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-right">Managed:</td>
+                    <td><strong>{$affiliatelinkscode}&pid=2</strong></td>
+                </tr>
+            </table>
         </div>
+    </div>
+
     {/if}
 
 {/if}
