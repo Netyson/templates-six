@@ -6,3 +6,78 @@
     defined here.
 
 ***************************************************** */
+
+/**** Navigation Farbe ändern ****/
+.navbar-main {
+    background-color: #1fbdf2;
+    background: linear-gradient(to right,#39dfa5,#1fbdf2);
+
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+    color: #fff;
+    background-color: #204d74;
+    border-color: #1fbdf2;
+}
+
+
+section#home-banner {
+    background: linear-gradient(to right,#39dfa5,#1fbdf2);
+}
+
+/**** Schriftart ****/
+body, button, input, select, textarea {
+    font-family: "Lato","Open Sans",Verdana,Tahoma,serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Roboto","Open Sans",Verdana,Tahoma,serif;
+}
+
+/**** Schriftfarbe-Headers ****/
+div.header-lined h1 {
+    color: #444;
+}
+/**** Hoverfarbe bei Navigation****/
+
+.navbar-main .navbar-nav>.active>a, .navbar-main .navbar-nav>.active>a:focus, .navbar-main .navbar-nav>.active>a:hover, .navbar-main .navbar-nav>.open>a, .navbar-main .navbar-nav>.open>a:focus, .navbar-main .navbar-nav>.open>a:hover, .navbar-main .navbar-nav>li>a:focus, .navbar-main .navbar-nav>li>a:hover, .navbar-main li.account  {
+    color: #eee;
+   background-color: transparent;
+}
+/**** Farbe Button****/
+.btn-primary {
+    color: #fff;
+    background-color: #1fbdf2;
+    border-color: #41d5f9;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #41d5f9;
+    border-color: #1fbdf2;
+}
+
+section#home-banner .btn.transfer {
+    background-color: #25a2c7;
+}
+
+section#home-banner .btn.search {
+    background-color: #25a2c7;
+}
+
+ul.top-nav>li.primary-action>a.btn {
+    background-color: #25a2c7;
+}
+/**** Domain bestellen header ****/
+.domain-checker-bg {
+    background: linear-gradient(to right,#39dfa5,#1fbdf2);
+}
+/**** Bannerverbund deaktiveren ****/
+
+.featured-tlds-container {
+    display: none;
+}
+
+/**** SSL Zertifikate - Checker Ausblenden 
+.ssl-state {
+	    display: none;
+}****/

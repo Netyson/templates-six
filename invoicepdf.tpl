@@ -28,6 +28,9 @@ if ($status == 'Draft') {
 } elseif ($status == 'Refunded') {
     $pdf->SetFillColor(131, 182, 218);
     $pdf->SetDrawColor(91, 136, 182);
+} elseif ($status == 'Unpaid') {
+    $pdf->SetFillColor(255);
+    $pdf->SetDrawColor(255);
 } elseif ($status == 'Collections') {
     $pdf->SetFillColor(3, 3, 2);
     $pdf->SetDrawColor(127);
@@ -45,14 +48,7 @@ $pdf->SetTextColor(0);
 
 # Company Details
 $pdf->SetXY(15, 42);
-$pdf->SetFont($pdfFont, '', 13);
-foreach ($companyaddress as $addressLine) {
-    $pdf->Cell(180, 4, trim($addressLine), 0, 1, 'R');
-    $pdf->SetFont($pdfFont, '', 9);
-}
-if ($taxCode) {
-    $pdf->Cell(180, 4, $taxIdLabel . ': ' . trim($taxCode), 0, 1, 'R');
-}
+$pdf->Ln(10);
 $pdf->Ln(5);
 
 # Header Bar
@@ -62,44 +58,88 @@ $pdf->Ln(5);
  *
  * You can optionally define a header/footer in a way that is repeated across page breaks.
  * For more information, see http://docs.whmcs.com/PDF_Invoice#Header.2FFooter
+ * 
  */
 
-$pdf->SetFont($pdfFont, 'B', 15);
-$pdf->SetFillColor(239);
-$pdf->Cell(0, 8, $pagetitle, 0, 1, 'L', '1');
+ # Header - GAF
 $pdf->SetFont($pdfFont, '', 10);
-$pdf->Cell(0, 6, Lang::trans('invoicesdatecreated') . ': ' . $datecreated, 0, 1, 'L', '1');
-$pdf->Cell(0, 6, Lang::trans('invoicesdatedue') . ': ' . $duedate, 0, 1, 'L', '1');
+$tblhtml = '<table width="100%" cellpadding="2">
+<tr height="30" bgcolor="#efefef" style="font-weight:bold;text-align:center;border-color:#fff;">
+    <td align="left">' . $pagetitle . '</td>
+    <td align="left"></td>
+    <td align="left"></td>
+    <td align="left"></td>
+</tr>';
+$tblhtml .= '
+<tr height="30" bgcolor="#ffffff" style="font-weight:normal;">
+    <td align="left">' . Lang::trans('invoicesdatecreated') . ': ' . '</td>
+    <td align="left">' .  $datecreated . '</td>
+    <td align="left">MwSt. Nr.:</td>
+    <td align="left">CHE-313.807.947</td>
+</tr>
+<tr height="30"  bgcolor="#ffffff" style="font-weight:normal;" >
+    <td align="left">' . Lang::trans('invoicesdatedue') . ': ' . '</td>
+    <td align="left">' . $duedate . '</td>
+    <td align="left">' . Lang::trans('invoicesbalance') . '</td>
+    <td align="left">' . $balance  . '</td>
+</tr>
+</table>';
+$pdf->writeHTML($tblhtml, true, false, false , false, '');
 $pdf->Ln(10);
-
 $startpage = $pdf->GetPage();
 
-# Clients Details
-$addressypos = $pdf->GetY();
-$pdf->SetFont($pdfFont, 'B', 10);
-$pdf->Cell(0, 4, Lang::trans('invoicesinvoicedto'), 0, 1);
-$pdf->SetFont($pdfFont, '', 9);
+# Clients Details - GAF
+
+$tblhtml = '<table width="100%" cellpadding="1">
+    <tr height="30"  bgcolor="#ffffff" style="font-weight:bold;">
+        <td width="50%" align="left">' . Lang::trans('invoicesinvoicedto') . '</td>
+        <td width="50%" align="right">' . Lang::trans('invoicespayto') . '</td>
+    </tr>';
 if ($clientsdetails["companyname"]) {
-    $pdf->Cell(0, 4, $clientsdetails["companyname"], 0, 1, 'L');
-    $pdf->Cell(0, 4, Lang::trans('invoicesattn') . ': ' . $clientsdetails["firstname"] . ' ' . $clientsdetails["lastname"], 0, 1, 'L');
-} else {
-    $pdf->Cell(0, 4, $clientsdetails["firstname"] . " " . $clientsdetails["lastname"], 0, 1, 'L');
-}
-$pdf->Cell(0, 4, $clientsdetails["address1"], 0, 1, 'L');
-if ($clientsdetails["address2"]) {
-    $pdf->Cell(0, 4, $clientsdetails["address2"], 0, 1, 'L');
-}
-$pdf->Cell(0, 4, $clientsdetails["city"] . ", " . $clientsdetails["state"] . ", " . $clientsdetails["postcode"], 0, 1, 'L');
-$pdf->Cell(0, 4, $clientsdetails["country"], 0, 1, 'L');
-if (array_key_exists('tax_id', $clientsdetails) && $clientsdetails['tax_id']) {
-    $pdf->Cell(0, 4, $taxIdLabel . ': ' . $clientsdetails['tax_id'], 0, 1, 'L');
-}
+    $tblhtml .= '
+    <tr bgcolor="#ffffff">
+        <td align="left">' .$clientsdetails["companyname"]. '</td>
+        <td align="right">Arteeo GmbH</td>
+    </tr>
+    <tr bgcolor="#ffffff">
+    <td align="left">' . $clientsdetails["firstname"] . ' ' . $clientsdetails["lastname"] . '</td>
+    <td align="right">Reinhardstrasse 19</td>
+    </tr>
+    <tr bgcolor="#ffffff">
+    <td align="left">' . $clientsdetails["address1"] . '</td>
+    <td align="right">8008 Zürich</td>
+    </tr>
+    <tr bgcolor="#ffffff">
+    <td align="left">' . $clientsdetails["postcode"] . " " . $clientsdetails["city"] .'</td>
+    <td align="right"></td>
+    </tr>
+</table>';
+    } else {
+        $tblhtml .= '
+        <tr bgcolor="#ffffff">
+        <td align="left">' . $clientsdetails["firstname"] . ' ' . $clientsdetails["lastname"] . '</td>
+        <td align="right">Arteeo GmbH</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+        <td align="left">' . $clientsdetails["address1"] . '</td>
+        <td align="right">Reinhardstrasse 19</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+        <td align="left">' . $clientsdetails["postcode"] . " " . $clientsdetails["city"] .'</td>
+        <td align="right">8008 Zürich</td>
+        </tr>
+    </table>';
+    }
+$pdf->writeHTML($tblhtml, true, false, false, false, '');
+
+
 if ($customfields) {
     $pdf->Ln();
     foreach ($customfields as $customfield) {
-        $pdf->Cell(0, 4, $customfield['fieldname'] . ': ' . $customfield['value'], 0, 1, 'L');
+       $pdf->Cell(0, 4, $customfield['fieldname'] . ': ' . $customfield['value'], 0, 1, 'L');
     }
 }
+
 $pdf->Ln(10);
 
 # Invoice Items
@@ -197,10 +237,10 @@ if ($notes) {
     $pdf->MultiCell(170, 5, Lang::trans('invoicesnotes') . ': ' . $notes);
 }
 
-# Generation Date
+# Konto.Nr - GAF
 $pdf->SetFont($pdfFont, '', 8);
 $pdf->Ln(5);
-$pdf->Cell(180, 4, Lang::trans('invoicepdfgenerated') . ' ' . getTodaysDate(1), '', '', 'C');
+$pdf->Cell(180, 4, 'Arteeo GmbH Reinhardstrasse 19 8008 Zürich - IBAN: CH58 0483 5280 7381 9100 1 - MwSt. Nr: CHE-313.807.947', '', '', 'C');
 
 /**
  * Invoice footer
